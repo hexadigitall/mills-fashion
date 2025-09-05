@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mills Fashion - Nigerian Style & Elegance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f5;
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .hero-bg {
+            background-image: url('https://placehold.co/1600x900/e2e8f0/a0aec0?text=Mills+Fashion+Showroom');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- App Container -->
+    <div id="app" class="min-h-screen">
+
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
+            <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    <a href="#" onclick="app.navigateTo('home')"
+                        class="font-serif text-3xl font-bold text-gray-900 tracking-wider">
+                        MILLS FASHION
+                    </a>
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#" onclick="app.navigateTo('home')"
+                            class="text-gray-600 hover:text-gray-900 transition">Showroom</a>
+                        <a href="#" onclick="app.navigateTo('shop')"
+                            class="text-gray-600 hover:text-gray-900 transition">Shop</a>
+                        <div class="relative group">
+                            <a href="#" class="text-gray-600 hover:text-gray-900 transition">Categories</a>
+                            <div id="categories-menu"
+                                class="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 py-2 w-48 z-50">
+                                <!-- Categories will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="app.toggleCart()"
+                            class="relative text-gray-600 hover:text-gray-900 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span id="cart-indicator"
+                                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                        </button>
+                        <button class="md:hidden" id="mobile-menu-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="hidden md:hidden pb-4">
+                    <a href="#" onclick="app.navigateTo('home')"
+                        class="block py-2 text-gray-600 hover:text-gray-900">Showroom</a>
+                    <a href="#" onclick="app.navigateTo('shop')"
+                        class="block py-2 text-gray-600 hover:text-gray-900">Shop</a>
+                    <div id="mobile-categories-menu">
+                        <h3 class="font-semibold text-gray-800 mt-2 mb-1">Categories</h3>
+                        <!-- Mobile categories will be populated by JS -->
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main>
+            <!-- Home Page / Showroom -->
+            <section id="home-page" class="page">
+                <div class="hero-bg h-[60vh] md:h-[80vh] flex items-center justify-center text-center text-white">
+                    <div class="bg-black/50 p-8 rounded-lg">
+                        <h1 class="font-serif text-4xl md:text-6xl font-bold">The Essence of Modern Style</h1>
+                        <p class="mt-4 max-w-xl mx-auto text-lg">Discover curated collections that blend Nigerian
+                            heritage with contemporary design.</p>
+                        <button onclick="app.navigateTo('shop')"
+                            class="mt-8 px-8 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-200 transition transform hover:scale-105">Explore
+                            Collections</button>
+                    </div>
+                </div>
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <h2 class="text-3xl font-serif text-center font-bold mb-10">Featured Products</h2>
+                    <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Featured products will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shop / Category Page -->
+            <section id="shop-page" class="page hidden">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <h1 id="shop-title" class="text-4xl font-serif font-bold mb-8">All Products</h1>
+                    <div id="product-grid"
+                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+                        <!-- Products will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product Detail Page -->
+            <section id="product-detail-page" class="page hidden">
+                <div id="product-detail-content" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <!-- Product details will be populated by JS -->
+                </div>
+            </section>
+
+            <!-- Checkout Page -->
+            <section id="checkout-page" class="page hidden">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <h1 class="text-4xl font-serif font-bold mb-8 text-center">Checkout</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                        <div class="lg:col-span-2">
+                            <h2 class="text-2xl font-semibold mb-6">Shipping Information</h2>
+                            <form id="checkout-form" class="space-y-6">
+                                <div>
+                                    <label for="fullName" class="block text-sm font-medium text-gray-700">Full
+                                        Name</label>
+                                    <input type="text" id="fullName" name="fullName" required
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-500 focus:border-gray-500 sm:text-sm p-3">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700">Email
+                                        Address</label>
+                                    <input type="email" id="email" name="email" required
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-500 focus:border-gray-500 sm:text-sm p-3">
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone
+                                        Number</label>
+                                    <input type="tel" id="phone" name="phone" required
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-500 focus:border-gray-500 sm:text-sm p-3">
+                                </div>
+                                <div>
+                                    <label for="address" class="block text-sm font-medium text-gray-700">Delivery
+                                        Address</label>
+                                    <input type="text" id="address" name="address" required
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-500 focus:border-gray-500 sm:text-sm p-3">
+                                </div>
+                                <div>
+                                    <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+                                    <input type="text" id="city" name="city" required
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-500 focus:border-gray-500 sm:text-sm p-3">
+                                </div>
+                                <div>
+                                    <label for="state" class="block text-sm font-medium text-gray-700">State</label>
+                                    <input type="text" id="state" name="state" required
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-500 focus:border-gray-500 sm:text-sm p-3">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-lg">
+                            <h2 class="text-2xl font-semibold mb-6">Order Summary</h2>
+                            <div id="checkout-summary" class="space-y-4 mb-6">
+                                <!-- Order summary will be populated by JS -->
+                            </div>
+                            <div class="border-t pt-4 space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Subtotal</span>
+                                    <span id="checkout-subtotal"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Shipping</span>
+                                    <span id="checkout-shipping"></span>
+                                </div>
+                                <div class="flex justify-between font-bold text-lg">
+                                    <span>Total</span>
+                                    <span id="checkout-total"></span>
+                                </div>
+                            </div>
+                            <button onclick="app.processPayment()"
+                                class="w-full mt-8 bg-gray-800 text-white py-3 rounded-md font-semibold hover:bg-gray-900 transition">Pay
+                                Now</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="modal-overlay">
+        <div class="modal-content relative w-full max-w-lg">
+            <button onclick="app.toggleCart()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <h2 class="text-2xl font-bold mb-6">Your Cart</h2>
+            <div id="cart-items" class="mb-6 max-h-96 overflow-y-auto">
+                <!-- Cart items will be populated by JS -->
+            </div>
+            <div id="cart-footer" class="hidden">
+                <div class="border-t pt-4">
+                    <div class="flex justify-between font-semibold">
+                        <span>Subtotal</span>
+                        <span id="cart-subtotal"></span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">Shipping & taxes calculated at checkout.</p>
+                </div>
+                <button onclick="app.navigateTo('checkout')"
+                    class="w-full mt-6 bg-gray-800 text-white py-3 rounded-md font-semibold hover:bg-gray-900 transition">Proceed
+                    to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Message Modal -->
+    <div id="message-modal" class="modal-overlay">
+        <div class="modal-content text-center">
+            <div id="message-content"></div>
+            <button onclick="document.getElementById('message-modal').classList.remove('active')"
+                class="mt-4 px-6 py-2 bg-gray-800 text-white rounded-md">Close</button>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <p class="font-serif text-2xl font-bold">MILLS FASHION</p>
+            <p class="mt-2 text-gray-400">Defining Nigerian Fashion since 2024.</p>
+            <p class="mt-4 text-sm text-gray-500">&copy; 2025 Mills Fashion. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const app = {
+            state: {
+                currentPage: 'home',
+                products: [],
+                cart: [],
+                categories: [],
+            },
+
+            // --- INITIALIZATION ---
+            init() {
+                this.fetchProducts();
+                this.setupEventListeners();
+                this.render();
+            },
+
+            fetchProducts() {
+                // In a real app, this would be an API call.
+                // Using placeholder images from placehold.co
+                const productData = [
+                    { id: 1, name: 'Adire Silk Kaftan', price: 45000, category: 'Kaftans', image: 'https://placehold.co/600x800/A3B18A/344E41?text=Adire+Kaftan', description: 'Elegant and flowing silk kaftan with traditional Adire patterns. Perfect for special occasions.', featured: true },
+                    { id: 2, name: 'Luxe Aso-Oke Agbada', price: 120000, category: 'Agbada', image: 'https://placehold.co/600x800/3A5A40/ffffff?text=Aso-Oke+Agbada', description: 'A modern take on the classic Agbada, crafted from premium Aso-Oke fabric with intricate embroidery.', featured: true },
+                    { id: 3, name: 'Ankara Print Blazer', price: 35000, category: 'Blazers', image: 'https://placehold.co/600x800/588157/ffffff?text=Ankara+Blazer', description: 'A sharp, tailored blazer made with vibrant Ankara fabric. A statement piece for any wardrobe.', featured: true },
+                    { id: 4, name: 'Monochrome Buba & Sokoto', price: 65000, category: 'Traditional Sets', image: 'https://placehold.co/600x800/344E41/ffffff?text=Buba+&+Sokoto', description: 'A sophisticated and minimalist Buba and Sokoto set in high-quality guinea brocade.', featured: true },
+                    { id: 5, name: 'Urban Dashiki Shirt', price: 25000, category: 'Shirts', image: 'https://placehold.co/600x800/DAD7CD/344E41?text=Dashiki+Shirt', description: 'A casual yet stylish Dashiki-inspired shirt for the modern man. Made from breathable cotton.' },
+                    { id: 6, name: 'Embroidered Senator Wear', price: 75000, category: 'Senator Styles', image: 'https://placehold.co/600x800/A3B18A/344E41?text=Senator+Wear', description: 'Impeccably tailored Senator style suit with subtle chest embroidery. Commands respect.' },
+                    { id: 7, name: 'Linen Two-Piece Set', price: 55000, category: 'Traditional Sets', image: 'https://placehold.co/600x800/588157/ffffff?text=Linen+Set', description: 'A comfortable and stylish two-piece set made from breathable linen, ideal for the Nigerian climate.' },
+                    { id: 8, name: 'Royal Blue Agbada', price: 150000, category: 'Agbada', image: 'https://placehold.co/600x800/3A5A40/ffffff?text=Royal+Agbada', description: 'Make a grand entrance with this stunning royal blue Agbada, featuring gold embroidery.' },
+                ];
+                this.state.products = productData;
+                this.state.categories = [...new Set(productData.map(p => p.category))];
+            },
+
+            setupEventListeners() {
+                // Mobile menu toggle
+                document.getElementById('mobile-menu-button').addEventListener('click', () => {
+                    document.getElementById('mobile-menu').classList.toggle('hidden');
+                });
+
+                // Close modal on overlay click
+                document.getElementById('cart-modal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) this.toggleCart();
+                });
+            },
+
+            // --- NAVIGATION & ROUTING ---
+            navigateTo(page, filter = null) {
+                this.state.currentPage = page;
+                window.scrollTo(0, 0);
+
+                if (page === 'shop' && filter) {
+                    this.renderShop(filter);
+                } else if (page === 'product') {
+                    this.renderProductDetail(filter);
+                } else {
+                    this.render();
+                }
+
+                // Close mobile menu on navigation
+                document.getElementById('mobile-menu').classList.add('hidden');
+                if (page === 'checkout' && this.state.cart.length > 0) {
+                    this.toggleCart(false); // force close cart
+                    this.renderCheckout();
+                } else if (page === 'checkout') {
+                    this.showMessage('Your cart is empty!', 'error');
+                    this.navigateTo('shop');
+                }
+            },
+
+            // --- RENDERING ---
+            render() {
+                this.renderPage();
+                this.renderCategories();
+                this.updateCartIndicator();
+                this.renderCart();
+                this.renderFeaturedProducts();
+            },
+
+            renderPage() {
+                document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+                const pageId = `${this.state.currentPage}-page`;
+                const currentPageElement = document.getElementById(pageId);
+                if (currentPageElement) {
+                    currentPageElement.classList.remove('hidden');
+                    if (this.state.currentPage === 'shop') {
+                        this.renderShop();
+                    }
+                } else {
+                    document.getElementById('home-page').classList.remove('hidden');
+                }
+            },
+
+            renderCategories() {
+                const categoriesMenu = document.getElementById('categories-menu');
+                const mobileCategoriesMenu = document.getElementById('mobile-categories-menu');
+
+                let menuHTML = '';
+                this.state.categories.forEach(cat => {
+                    menuHTML += `<a href="#" onclick="app.navigateTo('shop', '${cat}')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">${cat}</a>`;
+                });
+                categoriesMenu.innerHTML = menuHTML;
+
+                let mobileMenuHTML = '<h3 class="font-semibold text-gray-800 mt-2 mb-1">Categories</h3>';
+                this.state.categories.forEach(cat => {
+                    mobileMenuHTML += `<a href="#" onclick="app.navigateTo('shop', '${cat}')" class="block py-2 text-sm text-gray-600 hover:text-gray-900 ml-2">${cat}</a>`;
+                });
+                mobileCategoriesMenu.innerHTML = mobileMenuHTML;
+            },
+
+            renderProductCard(product) {
+                return `
+                <div class="group relative">
+                    <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
+                    </div>
+                    <div class="mt-4 flex justify-between">
+                        <div>
+                            <h3 class="text-sm text-gray-700">
+                                <a href="#" onclick="app.navigateTo('product', ${product.id})">
+                                    <span aria-hidden="true" class="absolute inset-0"></span>
+                                    ${product.name}
+                                </a>
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-500">${product.category}</p>
+                        </div>
+                        <p class="text-sm font-medium text-gray-900">₦${product.price.toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+            },
+
+            renderFeaturedProducts() {
+                const container = document.getElementById('featured-products');
+                const featured = this.state.products.filter(p => p.featured);
+                container.innerHTML = featured.map(p => this.renderProductCard(p)).join('');
+            },
+
+            renderShop(category = null) {
+                const grid = document.getElementById('product-grid');
+                const title = document.getElementById('shop-title');
+
+                let productsToShow = this.state.products;
+                if (category) {
+                    productsToShow = this.state.products.filter(p => p.category === category);
+                    title.textContent = category;
+                } else {
+                    title.textContent = 'All Products';
+                }
+                grid.innerHTML = productsToShow.map(p => this.renderProductCard(p)).join('');
+            },
+
+            renderProductDetail(productId) {
+                const product = this.state.products.find(p => p.id === productId);
+                if (!product) {
+                    this.navigateTo('shop');
+                    return;
+                }
+
+                const content = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div>
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-auto object-cover rounded-lg shadow-lg">
+                    </div>
+                    <div>
+                        <button onclick="app.navigateTo('shop', '${product.category}')" class="text-sm text-gray-500 hover:underline">${product.category}</button>
+                        <h1 class="text-4xl font-serif font-bold mt-2">${product.name}</h1>
+                        <p class="text-3xl font-light my-4">₦${product.price.toLocaleString()}</p>
+                        <p class="text-gray-600 leading-relaxed">${product.description}</p>
+                        <div class="mt-8">
+                            <button onclick="app.addToCart(${product.id})" class="w-full px-8 py-4 bg-gray-800 text-white font-semibold rounded-md hover:bg-gray-900 transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+                document.getElementById('product-detail-content').innerHTML = content;
+                document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+                document.getElementById('product-detail-page').classList.remove('hidden');
+            },
+
+            renderCheckout() {
+                const summaryContainer = document.getElementById('checkout-summary');
+                const subtotalEl = document.getElementById('checkout-subtotal');
+                const shippingEl = document.getElementById('checkout-shipping');
+                const totalEl = document.getElementById('checkout-total');
+
+                const subtotal = this.state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                const shipping = 5000; // Flat rate shipping
+                const total = subtotal + shipping;
+
+                summaryContainer.innerHTML = this.state.cart.map(item => `
+                <div class="flex justify-between items-center text-sm">
+                    <div>
+                        <p class="font-semibold">${item.name}</p>
+                        <p class="text-gray-500">Qty: ${item.quantity}</p>
+                    </div>
+                    <p>₦${(item.price * item.quantity).toLocaleString()}</p>
+                </div>
+            `).join('');
+
+                subtotalEl.textContent = `₦${subtotal.toLocaleString()}`;
+                shippingEl.textContent = `₦${shipping.toLocaleString()}`;
+                totalEl.textContent = `₦${total.toLocaleString()}`;
+            },
+
+            // --- CART LOGIC ---
+            addToCart(productId) {
+                const product = this.state.products.find(p => p.id === productId);
+                const cartItem = this.state.cart.find(item => item.id === productId);
+
+                if (cartItem) {
+                    cartItem.quantity++;
+                } else {
+                    this.state.cart.push({ ...product, quantity: 1 });
+                }
+                this.showMessage(`${product.name} added to cart!`);
+                this.render();
+            },
+
+            updateCartQuantity(productId, change) {
+                const cartItem = this.state.cart.find(item => item.id === productId);
+                if (cartItem) {
+                    cartItem.quantity += change;
+                    if (cartItem.quantity <= 0) {
+                        this.state.cart = this.state.cart.filter(item => item.id !== productId);
+                    }
+                }
+                this.render();
+            },
+
+            renderCart() {
+                const cartItemsContainer = document.getElementById('cart-items');
+                const cartFooter = document.getElementById('cart-footer');
+
+                if (this.state.cart.length === 0) {
+                    cartItemsContainer.innerHTML = '<p class="text-gray-500">Your cart is empty.</p>';
+                    cartFooter.classList.add('hidden');
+                    return;
+                }
+
+                cartFooter.classList.remove('hidden');
+                cartItemsContainer.innerHTML = this.state.cart.map(item => `
+                <div class="flex items-center justify-between py-4 border-b">
+                    <div class="flex items-center">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-20 object-cover rounded-md mr-4">
+                        <div>
+                            <p class="font-semibold">${item.name}</p>
+                            <p class="text-sm text-gray-600">₦${item.price.toLocaleString()}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                         <button onclick="app.updateCartQuantity(${item.id}, -1)" class="px-2 py-1 border rounded-md">-</button>
+                         <span class="px-3">${item.quantity}</span>
+                         <button onclick="app.updateCartQuantity(${item.id}, 1)" class="px-2 py-1 border rounded-md">+</button>
+                    </div>
+                </div>
+            `).join('');
+
+                const subtotal = this.state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                document.getElementById('cart-subtotal').textContent = `₦${subtotal.toLocaleString()}`;
+            },
+
+            updateCartIndicator() {
+                const indicator = document.getElementById('cart-indicator');
+                const totalItems = this.state.cart.reduce((sum, item) => sum + item.quantity, 0);
+                indicator.textContent = totalItems;
+            },
+
+            toggleCart(forceState = null) {
+                const modal = document.getElementById('cart-modal');
+                if (forceState === true) {
+                    modal.classList.add('active');
+                } else if (forceState === false) {
+                    modal.classList.remove('active');
+                } else {
+                    modal.classList.toggle('active');
+                }
+            },
+
+            // --- PAYMENT & UTILITIES ---
+            processPayment() {
+                const form = document.getElementById('checkout-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const subtotal = this.state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                const shipping = 5000;
+                const total = (subtotal + shipping) * 100; // Paystack amount is in kobo
+                const email = document.getElementById('email').value;
+                const fullName = document.getElementById('fullName').value;
+                const phone = document.getElementById('phone').value;
+
+                const handler = PaystackPop.setup({
+                    key: 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // REPLACE WITH YOUR PUBLIC KEY
+                    email: email,
+                    amount: total,
+                    currency: 'NGN',
+                    ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference
+                    metadata: {
+                        full_name: fullName,
+                        phone_number: phone,
+                        cart: JSON.stringify(this.state.cart.map(i => ({ id: i.id, name: i.name, qty: i.quantity })))
+                    },
+                    callback: (response) => {
+                        // Payment successful
+                        this.showMessage('Payment complete! Thank you for your order.', 'success');
+                        this.state.cart = [];
+                        form.reset();
+                        this.render();
+                        this.navigateTo('home');
+                    },
+                    onClose: () => {
+                        // User closed the popup
+                        this.showMessage('Transaction was not completed.', 'error');
+                    }
+                });
+                handler.openIframe();
+            },
+
+            showMessage(message, type = 'success') {
+                const modal = document.getElementById('message-modal');
+                const content = document.getElementById('message-content');
+
+                const successIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                const errorIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+
+                content.innerHTML = `
+                ${type === 'success' ? successIcon : errorIcon}
+                <p>${message}</p>
+            `;
+                modal.classList.add('active');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+
+</body>
+
+</html>
